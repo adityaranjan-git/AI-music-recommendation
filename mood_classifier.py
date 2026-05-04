@@ -1,11 +1,6 @@
-"""
-=======================================================
-  AI Song Finder — Mood Classification Model  v3.0
-  TF-IDF Vectorization + Multinomial Naive Bayes
-=======================================================
-"""
 
-# ── Step 1: All Imports at the Top ─────────────────────────────────────────
+
+
 import random
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -15,8 +10,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.pipeline import Pipeline
 
 
-# ── Step 2: Labeled Dataset (50 samples per class = 200 total) ─────────────
-# Each sentence maps to: happy | sad | calm | energetic
+
 
 data = {
 
@@ -233,7 +227,7 @@ data = {
     ],
 }
 
-# Verify all classes have exactly 50 samples
+
 for mood_name, texts in data.items():
     assert len(texts) == 50, f"ERROR: '{mood_name}' has {len(texts)} samples, expected 50"
 
@@ -248,15 +242,6 @@ sentences = np.array(sentences)
 labels    = np.array(labels)
 
 
-# ── Step 3: Build Scikit-learn Pipeline ────────────────────────────────────
-# Pipeline chains TF-IDF → MultinomialNB together.
-# Benefit: vectorizer is fit ONLY on training data (no data leakage).
-#
-# Vectorizer settings:
-#   stop_words=None    → keep all words (emotion words like "sad", "feel" matter)
-#   ngram_range=(1,1)  → single words only (bigrams hurt on small datasets)
-#   sublinear_tf=True  → log(1+tf) reduces dominance of very frequent words
-#   min_df=1           → include every token (small dataset, keep all vocab)
 
 pipeline = Pipeline([
     ("tfidf", TfidfVectorizer(
@@ -271,9 +256,7 @@ pipeline = Pipeline([
 ])
 
 
-# ── Step 4: Stratified Train / Test Split ──────────────────────────────────
-# 80% train (40 per class), 20% test (10 per class)
-# stratify=labels → equal class distribution in both sets
+
 
 X_train, X_test, y_train, y_test = train_test_split(
     sentences, labels,
@@ -290,16 +273,13 @@ print(f"  Training set   : {len(X_train)} samples")
 print(f"  Test set       : {len(X_test)} samples\n")
 
 
-# ── Step 5: Train the Model ─────────────────────────────────────────────────
-# pipeline.fit() runs TF-IDF on X_train, then trains Naive Bayes.
+
 
 pipeline.fit(X_train, y_train)
 print("  [OK] Model trained successfully!\n")
 
 
-# ── Step 6: 5-Fold Cross-Validation ────────────────────────────────────────
-# More reliable than a single train/test split.
-# StratifiedKFold keeps class balance in every fold.
+
 
 cv        = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 cv_scores = cross_val_score(pipeline, sentences, labels, cv=cv, scoring="accuracy")
@@ -310,7 +290,7 @@ print(f"  Mean        : {cv_scores.mean()*100:.2f}%")
 print(f"  Std Dev     : +/-{cv_scores.std()*100:.2f}%\n")
 
 
-# ── Step 7: Evaluate on Held-Out Test Set ──────────────────────────────────
+
 y_pred   = pipeline.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
@@ -324,7 +304,7 @@ print(classification_report(
     digits=2,
 ))
 
-# Confusion Matrix
+
 print("  Confusion Matrix (rows=actual, cols=predicted):")
 class_names = sorted(data.keys())
 print(f"  {'':12}", end="")
@@ -340,7 +320,7 @@ for i, row_label in enumerate(class_names):
 print()
 
 
-# ── Step 8: Song Genre Mapping ─────────────────────────────────────────────
+
 mood_suggestions = {
     "happy":     "Upbeat pop, Bollywood hits, feel-good dance tracks",
     "sad":       "Soulful ballads, acoustic, lo-fi chill, ghazals",
@@ -349,8 +329,6 @@ mood_suggestions = {
 }
 
 
-# ── Step 8b: Friendly AI Advice Per Mood ───────────────────────────────────
-# 4 rotating suggestions per mood — one is picked randomly each time.
 
 mood_advice = {
     "happy": [
@@ -385,7 +363,7 @@ def get_advice(mood):
     return random.choice(mood_advice[mood])
 
 
-# ── Step 9: Prediction Function ─────────────────────────────────────────────
+
 def predict_mood(user_text):
     """
     Predict the mood of a free-text sentence.
@@ -399,7 +377,7 @@ def predict_mood(user_text):
         all_probs (dict) : Probability scores for all 4 moods.
         advice (str)     : A short friendly AI suggestion.
     """
-    # Vectorize and classify in one step using the pipeline
+   
     probs_array = pipeline.predict_proba([user_text])[0]
     classes     = pipeline.classes_
 
@@ -411,7 +389,7 @@ def predict_mood(user_text):
     return mood, confidence, all_probs, advice
 
 
-# ── Step 10: Interactive Mood Input Loop ────────────────────────────────────
+
 def main():
     print("=" * 60)
     print("  AI Song Finder — Mood Predictor")
@@ -422,17 +400,16 @@ def main():
     while True:
         user_input = input("  How are you feeling? --> ").strip()
 
-        # Exit condition
         if user_input.lower() in ("quit", "exit", "q"):
             print("\n  Goodbye! Enjoy your music.\n")
             break
 
-        # Skip empty input
+       
         if not user_input:
             print("  [!] Please type a sentence describing your mood.\n")
             continue
 
-        # Run prediction
+       
         mood, confidence, all_probs, advice = predict_mood(user_input)
 
         print(f"\n  Detected Mood  : {mood.upper()}  ({confidence:.1f}% confidence)")
