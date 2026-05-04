@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Song Finder</title>
+    <meta name="description" content="Discover the perfect soundtrack for your current mood with AI Song Finder.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="container">
+        <!-- Auth Section -->
+        <section id="auth-section" class="auth-section glass-panel">
+            <div class="auth-tabs">
+                <button id="tab-login" class="auth-tab active" type="button">Login</button>
+                <button id="tab-signup" class="auth-tab" type="button">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <label for="login-username">Username or Email</label>
+                    <input type="text" id="login-username" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div id="login-error" class="form-error hidden"></div>
+                <button type="submit" class="btn-primary" style="width: 100%">Login</button>
+            </form>
+
+            
+            <form id="signup-form" class="auth-form hidden">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div id="signup-error" class="form-error hidden"></div>
+                <button type="submit" class="btn-primary" style="width: 100%">Sign Up</button>
+            </form>
+        </section>
+
+        
+        <div id="app-section" class="hidden">
+            <header class="header">
+                <div class="user-controls">
+                    <span id="welcome-message">Welcome, User</span>
+                    <button id="logout-btn" class="btn-secondary" type="button">Logout</button>
+                </div>
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    <h1>AI Song Finder</h1>
+                </div>
+                <p class="subtitle">Discover the perfect soundtrack for your mood.</p>
+                <p id="recent-searches" class="last-searched hidden">Recent Searches: <span></span></p>
+            </header>
+
+        <section class="search-section glass-panel">
+            <form id="search-form">
+                <div class="form-group">
+                    <label for="category">Music Category</label>
+                    <select id="category" name="category">
+                        <option value="">Any Category</option>
+                        <option value="English">English</option>
+                        <option value="Bollywood">Bollywood</option>
+                        <option value="Punjabi">Punjabi</option>
+                        <option value="Pop">Pop</option>
+                        <option value="Lo-Fi">Lo-Fi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mood">Your Current Mood</label>
+                    <input type="text" id="mood" name="mood" placeholder="e.g., happy, sad, romantic, energetic" required autocomplete="off">
+                    <div class="mood-chips">
+                        <span class="chip" data-mood="happy">Happy</span>
+                        <span class="chip" data-mood="sad">Sad</span>
+                        <span class="chip" data-mood="romantic">Romantic</span>
+                        <span class="chip" data-mood="energetic">Energetic</span>
+                        <span class="chip" data-mood="calm">Calm</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" id="find-btn">
+                    <span>Find Songs</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </form>
+        </section>
+
+        <div id="ai-suggestion" class="ai-suggestion hidden">
+            <!-- AI suggestion text will appear here -->
+        </div>
+
+        <div id="loader" class="loader hidden">
+            <div class="spinner"></div>
+            <p>Finding the perfect tunes...</p>
+        </div>
+
+        <section id="results-section" class="results-section hidden">
+            <h2>Recommended for you</h2>
+            <div id="results-grid" class="results-grid">
+                <!-- Song cards will be injected here -->
+            </div>
+        </section>
+
+        <div id="error-message" class="error-message hidden">
+            <!-- Error message will appear here -->
+        </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
+ 
