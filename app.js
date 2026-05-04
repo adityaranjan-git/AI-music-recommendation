@@ -148,8 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'chill': "Kick back and relax with these smooth, easy-listening tracks."
     };
 
-    function getSmartSuggestion(mood) {
+    function getSmartSuggestion(mood, category) {
         const lowerMood = mood.toLowerCase().trim();
+
+        // Special handling for Bhojpuri category
+        if (category === 'Bhojpuri') {
+            return `Enjoy ${mood} Bhojpuri songs 🎶`;
+        }
+
         let baseSuggestion = `Here is a curated playlist tailored perfectly for your "${mood}" mood.`;
         
         // Exact match
@@ -196,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayRecentSearches();
 
         // 2. Update AI Suggestion
-        aiSuggestionEl.textContent = getSmartSuggestion(mood);
+        aiSuggestionEl.textContent = getSmartSuggestion(mood, category);
         aiSuggestionEl.classList.remove('hidden');
 
         // 3. UI State transitions
@@ -207,8 +213,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 4. Fetch Data from iTunes Search API
-            // Combine category and mood for a better query. If no category, just use mood.
-            const query = category ? `${mood} ${category}` : mood;
+            // Special query for Bhojpuri: "Bhojpuri songs mood" gives better results.
+            // For all other categories: combine "category mood" for a better query.
+            let query;
+            if (category === 'Bhojpuri') {
+                query = `Bhojpuri songs ${mood}`;
+            } else if (category) {
+                query = `${category} ${mood}`;
+            } else {
+                query = mood;
+            }
             
             // Note: iTunes API returns JSONP traditionally, but modern browsers can use CORS for certain endpoints
             // However, the standard search endpoint usually supports direct fetch now.
